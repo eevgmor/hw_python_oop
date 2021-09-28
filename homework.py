@@ -21,9 +21,8 @@ class Calculator:
         """Calculates stats for past 7 days"""
         week_stats = 0
         for record in self.records:
-            if (
-                dt.datetime.now().date() - dt.timedelta(days=7)
-                 ) < record.date <= dt.datetime.now().date():
+            if (dt.datetime.now().date() - dt.timedelta(days=7)) < (record
+               .date) <= dt.datetime.now().date():
                 week_stats += record.amount
         return (week_stats)
 
