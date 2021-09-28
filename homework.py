@@ -64,22 +64,22 @@ class CashCalculator(Calculator):
     def __init__(self, limit):
         super().__init__(limit)
 
-        self.USD_RATE = 72.72
-        self.EURO_RATE = 85.23
+        self.USD = 72.72
+        self.EURO = 85.23
 
     def get_today_cash_remained(self, currency):
         """Calculates remaining cash for today.
         Receives currency and converts to it
         """
         self.currency = currency
-        self.today_cash_remained = (self.limit -
-                                    CashCalculator.get_today_stats(self))
+        self.today_cash_remained = (self.limit - CashCalculator
+                                    .get_today_stats(self))
 
         if self.currency == 'usd':
-            self.today_cash_remained = self.today_cash_remained/self.USD_RATE
+            self.today_cash_remained = self.today_cash_remained / self.USD
             self.currency = 'USD'
         if self.currency == 'eur':
-            self.today_cash_remained = self.today_cash_remained/self.EURO_RATE
+            self.today_cash_remained = self.today_cash_remained / self.EURO
             self.currency = 'Euro'
         if self.currency == 'rub':
             self.currency = 'руб'
@@ -111,8 +111,8 @@ class CaloriesCalculator(Calculator):
     def get_calories_remained(self):
         """Calculcates remained calories and output the message"""
 
-        self.calories_remained = (self.limit -
-                                  CaloriesCalculator.get_today_stats(self))
+        self.calories_remained = (self.limit - CaloriesCalculator
+                                  .get_today_stats(self))
 
         if self.calories_remained > 0:
             self.output = ('Сегодня можно съесть что-нибудь ещё, '
