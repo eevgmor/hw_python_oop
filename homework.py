@@ -42,13 +42,13 @@ class Record:
     Input - amount, comment, date
     """
 
-    def __init__(self, amount, comment, date=dt.date.today()):
+    def __init__(self, amount, comment, date='empty'):
         self.amount = amount
         self.comment = comment
-
+        
         # date equals current date if not provided
-        if date == dt.date.today():
-            self.date = date
+        if date == 'empty':
+            self.date = dt.date.today()
         else:
             self.date = dt.datetime.strptime(date, '%d.%m.%Y').date()
     pass
