@@ -20,9 +20,11 @@ class Calculator:
     def get_week_stats(self):
         """Calculates stats for past 7 days"""
         week_stats = 0
-        for i in range(len(self.records)):
-            if ((self.today - self.records[i].date).days) <= 7:
-                week_stats += self.records[i].amount
+        for record in self.records:
+            if (
+                dt.datetime.now().date() - dt.timedelta(days=7)
+                 ) < record.date <= dt.datetime.now().date():
+                week_stats += record.amount
         return (week_stats)
 
     def get_today_stats(self):
@@ -33,8 +35,6 @@ class Calculator:
                 today_stats += self.records[i].amount
         return(today_stats)
 
-    pass
-
 
 class Record:
     """
@@ -42,16 +42,15 @@ class Record:
     Input - amount, comment, date
     """
 
-    def __init__(self, amount, comment, date='empty'):
+    def __init__(self, amount, comment, date=None):
         self.amount = amount
         self.comment = comment
 
         # date equals current date if not provided
-        if date == 'empty':
+        if date is None:
             self.date = dt.date.today()
         else:
             self.date = dt.datetime.strptime(date, '%d.%m.%Y').date()
-    pass
 
 
 class CashCalculator(Calculator):
