@@ -62,7 +62,6 @@ class CashCalculator(Calculator):
     def __init__(self, limit):
         super().__init__(limit)
 
-
     def get_today_cash_remained(self, currency):
         """Calculates remaining cash for today.
         Receives currency and converts to it
