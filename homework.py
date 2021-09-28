@@ -62,8 +62,6 @@ class CashCalculator(Calculator):
     def __init__(self, limit):
         super().__init__(limit)
 
-        self.USD_RATE = 72.72
-        self.EURO_RATE = 85.23
 
     def get_today_cash_remained(self, currency):
         """Calculates remaining cash for today.
@@ -72,6 +70,8 @@ class CashCalculator(Calculator):
         self.currency = currency
         self.today_cash_remained = (self.limit - CashCalculator
                                     .get_today_stats(self))
+        self.USD_RATE = 60
+        self.EURO_RATE = 70
 
         if self.currency == 'usd':
             self.today_cash_remained = (self.today_cash_remained / self
