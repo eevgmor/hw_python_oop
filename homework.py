@@ -45,7 +45,7 @@ class Record:
     def __init__(self, amount, comment, date='empty'):
         self.amount = amount
         self.comment = comment
-        
+
         # date equals current date if not provided
         if date == 'empty':
             self.date = dt.date.today()
