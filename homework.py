@@ -59,8 +59,11 @@ class CashCalculator(Calculator):
     Converts to RUB, EUR, USD
     """
 
-    def __init__(self, limit):
+    def __init__(self, limit, usd_rate=50, euro_rate=100):
         super().__init__(limit)
+
+        self.USD_RATE = usd_rate
+        self.EURO_RATE = euro_rate
 
     def get_today_cash_remained(self, currency):
         """Calculates remaining cash for today.
@@ -69,8 +72,6 @@ class CashCalculator(Calculator):
         self.currency = currency
         self.today_cash_remained = (self.limit - CashCalculator
                                     .get_today_stats(self))
-        self.USD_RATE = 60
-        self.EURO_RATE = 70
 
         if self.currency == 'usd':
             self.today_cash_remained = (self.today_cash_remained / self
