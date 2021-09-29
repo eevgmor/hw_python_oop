@@ -124,5 +124,3 @@ class CaloriesCalculator(Calculator):
             self.output = 'Хватит есть!'
 
         return self.output
-
-assert Calculator.EURO_RATE == 1.2
