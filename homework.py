@@ -59,8 +59,8 @@ class CashCalculator(Calculator):
     Converts to RUB, EUR, USD
     """
 
-    USD_RATE = 50
-    EURO_RATE = 100
+    USD_RATE = 72.85
+    EURO_RATE = 84.58
 
     def __init__(self, limit):
         super().__init__(limit)
@@ -124,3 +124,5 @@ class CaloriesCalculator(Calculator):
             self.output = 'Хватит есть!'
 
         return self.output
+
+assert Calculator.EURO_RATE == 1.2
