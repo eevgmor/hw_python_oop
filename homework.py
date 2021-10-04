@@ -111,4 +111,4 @@ class CaloriesCalculator(Calculator):
             return self.CALORIES_UNDER_LIMIT.format(
                 calories_remained_format=calories_remained)
         else:
-            return self.CALORIES_UNDER_LIMIT
+            return self.CALORIES_OVER_LIMIT
