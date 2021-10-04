@@ -79,8 +79,8 @@ class CashCalculator(Calculator):
 
         if currency not in self.CURRENCIES:
             return self.CURRENCY_UNKNOWN
-        today_cash_remained = round((self.limit - self.get_today_stats())/self
-                                    .CURRENCIES[currency][1], 2)
+        today_cash_remained = round((self.limit - self.get_today_stats()
+                                     ) / self.CURRENCIES[currency][1], 2)
         if today_cash_remained == 0:
             return self.CASH_LIMIT_REACHED
         if today_cash_remained > 0:
