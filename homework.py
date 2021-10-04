@@ -22,8 +22,8 @@ class Calculator:
         """Calculates stats for past 7 days"""
         today = dt.date.today()
         return sum(self.records.amount for self.records in self.records
-                   if (self.records.date - self.DAYS_IN_WEEK) < self
-                   .records.date <= today)
+                   if ((today - self.DAYS_IN_WEEK) < self
+                       .records.date <= today))
 
     def get_today_stats(self):
         """Calculates stats for current day"""
