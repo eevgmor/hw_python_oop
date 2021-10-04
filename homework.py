@@ -8,31 +8,28 @@ class Calculator:
     provides week stats and today stats
     """
 
+    DAYS_IN_WEEK = dt.timedelta(days=7)
+
     def __init__(self, limit):
         self.limit = limit
         self.records = []
-        self.today = dt.date.today()
 
-    def add_record(self, Record):
-        """Receives object of class Record and adds record"""
-        self.records.append(Record)
+    def add_record(self, record):
+        """Receives object of class Record and adds a record"""
+        self.records.append(record)
 
     def get_week_stats(self):
         """Calculates stats for past 7 days"""
-        week_stats = 0
-        for record in self.records:
-            if (dt.datetime.now().date() - dt.timedelta(days=7)) < (record
-               .date) <= dt.datetime.now().date():
-                week_stats += record.amount
-        return (week_stats)
+        today = dt.date.today()
+        return sum(self.records.amount for self.records in self.records
+                   if (self.records.date - self.DAYS_IN_WEEK) < self
+                   .records.date <= today)
 
     def get_today_stats(self):
         """Calculates stats for current day"""
-        today_stats = 0
-        for i in range(len(self.records)):
-            if self.records[i].date == self.today:
-                today_stats += self.records[i].amount
-        return(today_stats)
+        today = dt.date.today()
+        return sum(self.records.amount for self.records in self.records
+                   if self.records.date == today)
 
 
 class Record:
@@ -40,16 +37,16 @@ class Record:
     Class Record receives data and saves it.
     Input - amount, comment, date
     """
+    # Here we define input date format as DMY
+    DATE_FORMAT = '%d.%m.%Y'
 
     def __init__(self, amount, comment, date=None):
         self.amount = amount
         self.comment = comment
-
-        # date equals current date if not provided
         if date is None:
             self.date = dt.date.today()
         else:
-            self.date = dt.datetime.strptime(date, '%d.%m.%Y').date()
+            self.date = dt.datetime.strptime(date, self.DATE_FORMAT).date()
 
 
 class CashCalculator(Calculator):
@@ -58,47 +55,42 @@ class CashCalculator(Calculator):
     Limit is taken from parent class Calculator.
     Converts to RUB, EUR, USD
     """
+    USD_RATE = 60.0
+    EURO_RATE = 70.0
+    CURRENCIES = {
+        'rub': ('руб', 1),
+        'usd': ('USD', USD_RATE),
+        'eur': ('Euro', EURO_RATE)
+    }
 
-    USD_RATE = 72.85
-    EURO_RATE = 84.58
+    CURRENCY_UNKNOWN = 'Валюта неизвестна'
 
-    def __init__(self, limit):
-        super().__init__(limit)
+    CASH_OVER_LIMIT = ('Денег нет, держись: твой долг - '
+                       '{cash_debt_format} {currency_name}')
+    CASH_UNDER_LIMIT = ('На сегодня осталось '
+                        '{cash_remained_format} {currency_name}')
+    CASH_LIMIT_REACHED = 'Денег нет, держись'
 
     def get_today_cash_remained(self, currency):
-        """Calculates remaining cash for today.
+        """
+        Calculates remaining cash for today.
         Receives currency and converts to it
         """
-        self.currency = currency
-        self.today_cash_remained = (self.limit - CashCalculator
-                                    .get_today_stats(self))
 
-        if self.currency == 'usd':
-            self.today_cash_remained = (self
-                                        .today_cash_remained / CashCalculator
-                                        .USD_RATE)
-            self.currency = 'USD'
-        if self.currency == 'eur':
-            self.today_cash_remained = (self
-                                        .today_cash_remained / CashCalculator
-                                        .EURO_RATE)
-            self.currency = 'Euro'
-        if self.currency == 'rub':
-            self.currency = 'руб'
-
-        self.today_cash_remained = round(self.today_cash_remained, 2)
-
-        if self.today_cash_remained > 0:
-            self.output = ('На сегодня осталось '
-                           f'{self.today_cash_remained} {self.currency}')
-        elif self.today_cash_remained < 0:
-            self.today_cash_remained = (-1) * self.today_cash_remained
-            self.output = ('Денег нет, держись: твой долг - '
-                           f'{self.today_cash_remained} {self.currency}')
+        if currency not in self.CURRENCIES:
+            return self.CURRENCY_UNKNOWN
+        today_cash_remained = round((self.limit - self.get_today_stats())/self
+                                    .CURRENCIES[currency][1], 2)
+        if today_cash_remained == 0:
+            return self.CASH_LIMIT_REACHED
+        if today_cash_remained > 0:
+            return self.CASH_UNDER_LIMIT.format(
+                cash_remained_format=today_cash_remained,
+                currency_name=self.CURRENCIES[currency][0])
         else:
-            self.output = 'Денег нет, держись'
-
-        return self.output
+            return self.CASH_OVER_LIMIT.format(
+                cash_debt_format=abs(today_cash_remained),
+                currency_name=self.CURRENCIES[currency][0])
 
 
 class CaloriesCalculator(Calculator):
@@ -107,20 +99,16 @@ class CaloriesCalculator(Calculator):
     Limit is taken from parent class Calculator.
     """
 
-    def __init__(self, limit):
-        super().__init__(limit)
+    CALORIES_OVER_LIMIT = 'Хватит есть!'
+    CALORIES_UNDER_LIMIT = ('Сегодня можно съесть что-нибудь ещё, '
+                            'но с общей калорийностью '
+                            'не более {calories_remained_format} кКал')
 
     def get_calories_remained(self):
-        """Calculcates remained calories and output the message"""
-
-        self.calories_remained = (self.limit - CaloriesCalculator
-                                  .get_today_stats(self))
-
-        if self.calories_remained > 0:
-            self.output = ('Сегодня можно съесть что-нибудь ещё, '
-                           'но с общей калорийностью '
-                           f'не более {self.calories_remained} кКал')
+        """Calculcates remained calories for today"""
+        calories_remained = (self.limit - self.get_today_stats())
+        if calories_remained > 0:
+            return self.CALORIES_UNDER_LIMIT.format(
+                calories_remained_format=calories_remained)
         else:
-            self.output = 'Хватит есть!'
-
-        return self.output
+            return self.CALORIES_UNDER_LIMIT
