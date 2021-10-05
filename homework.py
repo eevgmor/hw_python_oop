@@ -28,8 +28,8 @@ class Calculator:
     def get_today_stats(self):
         """Calculates stats for current day"""
         today = dt.date.today()
-        return sum(self.records.amount for self.records in self.records
-                   if self.records.date == today)
+        return sum(record.amount for record in self.records
+                   if record.date == today)
 
 
 class Record:
@@ -112,3 +112,21 @@ class CaloriesCalculator(Calculator):
                 calories_remained_format=calories_remained)
         else:
             return self.CALORIES_OVER_LIMIT
+##################
+# создадим калькулятор денег с дневным лимитом 1000
+calories_calculator = CaloriesCalculator(2000)
+
+# дата в параметрах не указана,
+# так что по умолчанию к записи
+# должна автоматически добавиться сегодняшняя дата
+calories_calculator.add_record(Record(amount=1000, comment='кофе'))
+# и к этой записи тоже дата должна добавиться автоматически
+calories_calculator.add_record(Record(amount=1001, comment='Серёге за обед'))
+# а тут пользователь указал дату, сохраняем её
+calories_calculator.add_record(Record(amount=3000,
+                                  comment='бар в Танин др',
+                                  date='30.09.2021'))
+
+#print(calories_calculator.get_today_stats())
+
+##################
